@@ -1,0 +1,48 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style1.css'%}" />
+    <title>{{title}}</title>
+
+    <style>
+        .Center{
+            display: flex;
+            justify-content: 'center';
+            align-items: 'center';
+            
+        }
+    </style>
+
+</head>
+<body>
+    <!-- <div style="margin-top:10%"> -->
+    
+
+    <div style="margin-top:10%"></div>
+    <div style = "width: 300px;margin: 0 auto;" >
+        <h1 >{{title}}</h1>
+    </div>
+    <!-- backgroundImage come from views index_view -->
+    <div style = "width:800px; margin: 0 auto;background-image: url({% static backgroundImage %})">
+        
+        <form  action="/login/" method="post" class="loginCSS">
+            {% csrf_token %}
+            {{form}}
+            <input type="submit" style ="margin-top: 25px;" value="确定">
+        </form>
+        
+
+    </div >
+    
+    <div style = "width: 400px;
+    margin: 0 auto;
+    padding:20px;" >
+        <span style="font-size: small;">&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Copyright © 湖北华舟应急装备科技有限公司版权所有</span>
+    </div>
+    
+</body>
+</html>
