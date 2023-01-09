@@ -5,17 +5,24 @@ from django.contrib.auth.decorators import login_required
 from .tools import getmodelfield, loadData, getHeader
 from .models import *
 from .forms import *
+from pathlib import Path
 import sys
 exclude = ['username','email','is_staff','last_login','password','last_name','date_joined','is_active','is_superuser']
+
+BASE_DIR = Path(__file__).resolve().parent
+rootFilePath = str(BASE_DIR).split('\\')[-1]
         
 @login_required(login_url="/acount/login/")
 def table1_view(request):
-    modelName = table1
+    modelName = 'table1'
+    nextModleName = 'table2'
+    if nextModleName == '':
+        nextModleName = modelName
     modelInstance = globals()[modelName]
     #得到表的第一个obj
     obj = modelInstance.objects.get(id = 1)
     #传入obj的字典格式obj.__dict__函数getheader得到表的第二项到最后一项
-    cs = getmodelfield('app', modelName,exclude)
+    cs = getmodelfield(rootFilePath, modelName,exclude)
     header = getHeader(obj.__dict__,start = 1, end = len(obj.__dict__) -1,cs = cs)
     header1 = getHeader(obj.__dict__,start = 2, end = (len(obj.__dict__)),cs = None)
     # print(header)
@@ -36,14 +43,17 @@ def table1_view(request):
                 'headerAndWidth':headerAndWidth,
                 'totalData':totalData,'status':0,
                 'tableName':'厂区表','tableId':0,
-                'goback':'/logout/','nextLayout':'table2'})
+                'goback':'/logout/','nextLayout':'/'+rootFilePath+'/'+nextModleName})
 
                 
 @login_required(login_url="/acount/login/")
 def table2_view(request,tableId):
-    rootName = table1
+    rootName = 'table1'
     rootInstance = globals()[rootName]
-    modelName = table2
+    modelName = 'table2'
+    nextModleName = ''
+    if nextModleName == '':
+        nextModleName = modelName
     modelInstance = globals()[modelName]
     bindkey = rootInstance.objects.get(id = tableId)
     try:
@@ -51,7 +61,7 @@ def table2_view(request,tableId):
         
         objLst = modelInstance.objects.filter(bind = bindkey) 
         obj = objLst[0]
-        cs = getmodelfield('app', modelName,exclude)
+        cs = getmodelfield(rootFilePath, modelName,exclude)
         
         header = getHeader(obj.__dict__,start = 1, end = (len(obj.__dict__) - 1),cs = cs)
         # print(53,header)
@@ -68,14 +78,14 @@ def table2_view(request,tableId):
                     'totalData':totalData,'status':0,
                     'tableId':tableId,'tableName':'分厂区',
                     'modelName':modelName,'goback':'/app/'+rootName,
-                    'nextLayout':'#'})
+                    'nextLayout':'/'+rootFilePath+'/'+nextModleName})
     except:
         renderFile = 'renderTable1.html'  
         return render(request,renderFile,
                     {'headerAndWidth':[],
                     'totalData':[],'status':0,
                     'tableId':tableId,'tableName':'',
-                    'modelName':modelName,'goback':'rootName',
+                    'modelName':'/'+rootFilePath+'/'+nextModleName,'goback':'rootName',
                     'nextLayout':'#'})
  
                 

@@ -6,7 +6,7 @@ def writeUrlLoad():
     with open('./out/urls.py','w') as f:
         f.write('from django.urls import path ,include\n')
         f.write('from .views import *\n')
-        f.write('urlpabetterns = [\n')
+        f.write('urlpatterns = [\n')
         f.close()
 '''
 打开./draw/drawModels.txt读取所有的model名
@@ -29,8 +29,13 @@ def writeUrlBody():
         f.close()
     #print(modelnameLst)
     with open('./out/urls.py','a') as f:
-        for i in modelnameLst:
-            f.write("    path('{}/',{}),\n".format(i,i+'_view'))
+        for index in range(len(modelnameLst)):
+            if index == 0:
+                i = modelnameLst[index]
+                f.write("    path('{}/',{}),\n".format(i,i+'_view'))
+            else:
+                i = modelnameLst[index]
+                f.write("    path('{}/<tableId>',{}),\n".format(i,i+'_view'))
         f.write(']\n')
         f.close()
 '''

@@ -33,7 +33,7 @@
                         <!-- j 为数据中的每一项 -->
                         {% for j in i.data %}
                                 
-                                <td><a href = '/app/{{nextLayout}}/{{i.id}}'>{{j}}</a></td>
+                                <td><a href = '{{nextLayout}}/{{i.id}}'>{{j}}</a></td>
 
                         {% endfor %}
 
@@ -65,7 +65,7 @@
         
         <div style = 'width:150px;margin: 10% auto;text-align: center;'>
 
-            <a href = '/app/addSubTable/{{tableId}}/{{modelName}}'>添加</a>
+            <a href = '/testapp/addSubTable/{{tableId}}/{{modelName}}'>添加</a>
             <a href = '{{goback}}'>返回</a>
         </div>
 

@@ -45,7 +45,7 @@ def login_view(request):
             print('用户 {} ip {} 登陆'.format(request.user.first_name,ip))
             string = '用户 {} ip {} 时间 {} 登陆 '.format(request.user.first_name,ip,getCurrentTime())
             writeToLog(request,string)
-            return redirect('/app/levelOne/')#这里必须要127.0.0.1后的完整url
+            return redirect('/testapp/table1/')#这里必须要127.0.0.1后的完整url
     else:
         form = AuthenticationForm()
         title = '动能消耗统计'

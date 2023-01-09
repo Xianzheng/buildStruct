@@ -17,9 +17,9 @@ def mycopyfile(srcfile,dstpath):                       # 复制函数
         # print ("copy %s -> %s"%(srcfile, dstpath + fname))
  
  
-# src_dir = './'
-# dst_dir = './copy/'                                    # 目的路径记得加斜杠
-# src_file_list = glob(src_dir + '*')                    # glob获得路径下所有文件，可根据需要修改
-# for srcfile in src_file_list:
-#     mycopyfile(srcfile, dst_dir)
-mycopyfile('./out/models.py', './application/testapp/')
+src_dir = './out/'
+dst_dir = './application/testapp/'                                    # 目的路径记得加斜杠
+src_file_list = glob(src_dir + '*')                    # glob获得路径下所有文件，可根据需要修改
+for srcfile in src_file_list:
+    mycopyfile(srcfile, dst_dir)
+# mycopyfile('./out/*', './application/testapp/')
