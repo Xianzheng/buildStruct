@@ -23,7 +23,8 @@ rootFilePath = str(BASE_DIR).split({delimiter})[-1]
 def writeViewBody():
     modelnameLst = []
     bodypartLst = []
-    nextmodlenameLst = []
+    nextmodelnameLst = []
+    prevmodelnameLst = []
     with open('./draw/drawModels.txt','r') as f:
     
         lst = f.readlines()
@@ -35,8 +36,10 @@ def writeViewBody():
             modelnameLst.append(name)
             bodypartLst.append(body)
             if index != len(lst) - 1:
-                nextmodlenameLst.append(lst[index + 1].split(':')[0])
-        # print(nextmodlenameLst)
+                nextmodelnameLst.append(lst[index + 1].split(':')[0])
+            if index != 0:
+                prevmodelnameLst.append(lst[index - 1].split(':')[0])
+        # print(nextmodelnameLst)
         f.close()
     with open('./out/views.py','a',encoding = 'utf-8') as f:
         
@@ -45,7 +48,7 @@ def writeViewBody():
                 modelName = modelnameLst[index]
                 nextmodlename = ''
                 if index != len(modelnameLst) - 1:
-                    nextmodlename = nextmodlenameLst[index]
+                    nextmodlename = nextmodelnameLst[index]
                 # print('aaaa',nextmodlename)
                 # model = globals()[modelName]
                 string = """
@@ -86,20 +89,23 @@ def {}_view(request):
                 #<td><a href = '{{nextLayout}}/{{i.id}}'>{{j}}</a></td>
                 #'nextLayout':'/testapp/table2' 这个玩意要动态输入
                 string = string.replace('{}',modelName).replace('{1}','\''+modelName+'\'').replace('{2}','\''+nextmodlename+'\'')
-                print('\''+'table1'+'\'')
+                #print('\''+'table1'+'\'')
                 
                 f.write(string)
             else:
                 modelName = modelnameLst[index]
                 bodypart = bodypartLst[index]
                 nextmodlename = ''
+                prevmodelname = ''
                 if index != len(modelnameLst) - 1:
                     print(index)
-                    nextmodlename = nextmodlenameLst[index]
-                
-                print(modelName)
+                    nextmodlename = nextmodelnameLst[index]
+                # prevmodelnameLst = prevmodelnameLst[index - 1]
+                # print('prev',prevmodelnameLst)
+                prevmodelname = prevmodelnameLst[index - 1]
+                print("*",prevmodelname)
                 rootName = bodypart.split(',')[-1].split()[0]#得到foreign key model的名字
-                print(rootName)
+                #print(rootName)
                 '''
                 {1} -> modelName, {2} -> '\''+rootNa me+'\'', {3} -> '\''+modelName+'\''
                 '''
@@ -113,6 +119,26 @@ def {1}_view(request,tableId):
     if nextModleName == '':
         nextModleName = modelName
     modelInstance = globals()[modelName]
+
+    modelnameLst = {modelnameLst}
+
+    #确定上一层model名并生成实例
+    prevmodelname = ''
+    for index in range(len(modelnameLst)):
+        if modelnameLst[index] == modelName: 
+            if index != 0:
+                prevmodelname = modelnameLst[index - 1]
+    # print('******',prevmodelname)
+    rootName = prevmodelname
+    rootInstance = globals()[rootName]
+
+     #确定返回为什么
+    goback = ''
+    if prevmodelname == modelnameLst[0]:
+        goback = '/'+rootFilePath+'/'+prevmodelname
+    else:
+        goback = '/'+rootFilePath+'/'+prevmodelname+'/' + str(rootInstance.objects.all()[0].id)
+
     bindkey = rootInstance.objects.get(id = tableId)
     try:
         bindkey = rootInstance.objects.get(id = tableId)
@@ -135,7 +161,7 @@ def {1}_view(request,tableId):
                     {'headerAndWidth':headerAndWidth,
                     'totalData':totalData,'status':0,
                     'tableId':tableId,'tableName':'分厂区',
-                    'modelName':modelName,'goback':'/app/'+rootName,
+                    'modelName':modelName,'goback': goback,
                     'nextLayout':'/'+rootFilePath+'/'+nextModleName})
     except:
         renderFile = 'renderTable1.html'  
@@ -143,11 +169,12 @@ def {1}_view(request,tableId):
                     {'headerAndWidth':[],
                     'totalData':[],'status':0,
                     'tableId':tableId,'tableName':'',
-                    'modelName':'/'+rootFilePath+'/'+nextModleName,'goback':'rootName',
+                    'modelName':modelName,'goback': goback,
                     'nextLayout':'#'})\n 
                 '''
                 string = string.replace('{3}','\''+modelName+'\'').replace('{2}','\''+rootName+'\'').replace('{1}',modelName)
                 string = string.replace('{4}','\''+nextmodlename+'\'')
+                string = string.replace('{modelnameLst}',str(modelnameLst)) #string.replace 智能替换字符串
                 rootFilePath = '\''+str(BASE_DIR).split('\\')[-1]+'\''
                 d = '\\'
                 # print(repr(d))
@@ -155,6 +182,95 @@ def {1}_view(request,tableId):
                 f.write(string)
         
 
+def writeAddSubTable():
+    modelnameLst = []
+    bodypartLst = []
+    # nextmodelnameLst = []
+    prevmodelnameLst = []
+    with open('./draw/drawModels.txt','r') as f:
+    
+        lst = f.readlines()
+
+        for index in range(len(lst)):
+            parselst = lst[index].split(':')
+            name = parselst[0]#得到class的名字
+            body = parselst[1].replace('\n','')
+            modelnameLst.append(name)
+            bodypartLst.append(body)
+            # if index != len(lst) - 1:
+            #     nextmodelnameLst.append(lst[index + 1].split(':')[0])
+            # if index != 0:
+            #     prevmodelnameLst.append(lst[index - 1].split(':')[0])
+        # print(nextmodelnameLst)
+        print(modelnameLst)
+        f.close()
+
+    with open('./out/views.py','a',encoding = 'utf-8') as f:
+        string = """
+@login_required(login_url="/login/")
+def addSubTable_view(request,tableId,tableModel):
+    # print('tableId is ',tableId)
+    # print('tableModel is',tableModel,type(tableModel))
+    path = request.path
+    modelName = path.split('/')[-1]
+    formName = modelName +'_Form'
+    # print(formName)
+    # print(globals().keys())
+    form = globals()[formName]
+    model = globals()[modelName]
+    modelnameLst = {modelnameLst}
+    prevmodelname = ''
+    for index in range(len(modelnameLst)):
+        if modelnameLst[index] == modelName: 
+            if index != 0:
+                prevmodelname = modelnameLst[index - 1]
+    
+    # print(tableId)
+    if request.method == 'POST':
+        form = form(request.POST)
+        if form.is_valid():
+            instance = form.save(commit=False)
+            if tableId == '0':# 如果tableId等于0意味着根表，没有foreign key
+                pass
+            else:
+                # instance.bind = model.objects.get(id = tableId)
+                bindTable = prevmodelname
+                bindModel = globals()[bindTable]
+                instance.bind = bindModel.objects.get(id = tableId)
+                
+            instance.save()
+            
+            rd = tableModel[0].lower() + tableModel[1:]
+            if tableId == '0':
+                return redirect('/testapp/'+rd+'/')
+            return redirect('/testapp/'+rd+'/'+tableId)
+    else:
+
+        path = request.path
+        modelName = path.split('/')[-1]
+        formName = modelName +'_Form'
+        form = globals()[formName]
+        title = '添加厂区'
+        rd = tableModel[0].lower() + tableModel[1:]
+        goback = ''
+        print(tableId)
+        if tableId == '0':
+            goback = '/testapp/'+rd
+            print('yes')
+        else:
+            goback = '/testapp/'+rd+'/'+tableId
+            print('no')
+        print(goback)
+        
+        print('tableModel is',tableModel)
+       
+
+    return render(request,'form.html',{'form':form,
+    'tableName':title,'goback':goback})
+"""
+        string = string.replace('{modelnameLst}',str(modelnameLst))
+        f.write(string)
 writeViewLoad()
 writeViewBody()
+writeAddSubTable()
 

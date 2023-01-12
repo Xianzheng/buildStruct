@@ -36,8 +36,11 @@ def writeUrlBody():
             else:
                 i = modelnameLst[index]
                 f.write("    path('{}/<tableId>',{}),\n".format(i,i+'_view'))
+        f.write("path('addSubTable/<tableId>/<tableModel>',addSubTable_view),\n")
         f.write(']\n')
         f.close()
+
+
 '''
 运行function
 '''

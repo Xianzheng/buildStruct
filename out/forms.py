@@ -23,3 +23,14 @@ class table2_Form(forms.ModelForm):
 
         
             
+class table3_Form(forms.ModelForm):
+    class Meta:
+        model = table3
+
+        fields = "__all__"
+
+        exclude = ['id','bind']
+
+
+        
+            
