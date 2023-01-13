@@ -29,7 +29,7 @@
                 <tr>
                     <td>{{forloop.counter}}</td>
                     <!-- status 0 代表有跳轉 -->
-                    {% if status == 0 %}
+                    {% if status == 1 %}
                         <!-- j 为数据中的每一项 -->
                         {% for j in i.data %}
                                 
@@ -39,17 +39,17 @@
 
                     {% endif %}
                     <!-- status 1 显示表的细节，可以对每行内容进行修改删除 -->
-                    {% if status == 1 %}
+                    {% if status == 0 %}
 
                         {% for j in i.data %}
 
-                            <td>{{j}}</a></td>
+                            <td><a href = '{{nextLayout}}/{{i.id}}'>{{j}}</a></td>
 
                         {% endfor %}
                         <!-- 循环之后追加两个coloumn 更新修改-->
-                        <td><a href = '/app/updateRow/{{i.id}}/{{tableId}}'>更新</a></td>
+                        <td><a href = '/testapp/updateRow/{{modelName}}/{{i.id}}/{{tableId}}'>更新</a></td>
 
-                        <td><a onclick = 'return delete_alert()' href = '/app/deleteRow/{{i.id}}/{{tableId}}'>刪除</a></td>
+                        <td><a onclick = 'return delete_alert()' href = '/testapp/deleteRow/{{modelName}}/{{i.id}}/{{tableId}}'>刪除</a></td>
                     {% endif %}
                     
                 <tr>
