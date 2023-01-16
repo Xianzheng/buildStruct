@@ -1,38 +1,80 @@
-def writeAttribute(itemname,itemtype):#*agr,**kagr
+def getKeywordIndex(key,lst):
+    '''
+    得到包含keyword关键字在的index
+    '''
+    for index in range(len(lst)):
+        if key in lst[index]:
+            return index
+    return None
+
+def getKeywordContent(key,remainder):
+    '''
+    因为有vb的内容一般长'vb-名字'这样，
+    所以取vb-后面的内容为KeywordContent
+    '''
+    if getKeywordIndex('vb',remainder) != None:
+        vbIndex = getKeywordIndex('vb',remainder)
+        vbContent = remainder[vbIndex].split('-')[-1]
+        return vbContent
+    return None
+
+def addField(key,lst,string):
+    '''
+    拿到Keyword之后再对attibute中增加Field verbose_name 是什么
+    '''
+    if lst:
+        vbContent = getKeywordContent(key,lst)
+        if vbContent:
+            return string.replace(')','verbose_name = '+'\''+vbContent+'\')')
+    return string
+
+def writeAttribute(**attri):#*agr,**kagr
     # print(itemtype)
+    remainder = attri['lst'] #除了attribute name, 和 type剩余的  都放在一个lst里后续添加,rint
+    
+            
+
+    
     string = ''
 
-    if itemtype == 'auto':     
-        string = itemname+ \
+    if attri['type'] == 'auto':     
+        string = attri['name']+ \
             ' = '+"models.AutoField(primary_key=True,auto_created=True)"
+        
             
-    if itemtype == 'string':     
+    if attri['type'] == 'string':     
         string = '    '+\
-            itemname+' = '+"models.CharField(max_length=20,default = '')"
+            attri['name']+' = '+"models.CharField(max_length=20,default = '',)"
+        string = addField('vb',remainder,string)
 
     if itemtype == 'int':     
         string = '    '+itemname+' = '+"models.IntegerField(default = 0)"
+        string = addField('vb',remainder,string)
 
     if itemtype == 'foreignKey':
         string = '    '+'bind'+' = '+\
             "models.ForeignKey({},default=None,on_delete=models.CASCADE)".format(itemname)
+
+    
+    
             
     with open('./out/models.py','a',encoding='utf-8') as f1:
         # print(string)
         f1.write(string)
         f1.write('\n')
-        # f1.close()
+        f1.close()
+        
 
-with open('./out/models.py','w') as f1:
+with open('./out/models.py','w',encoding='utf-8') as f1:
     f1.write('from django.db import models')
     f1.close()
 
-with open('./out/admin.py','w') as f1:
+with open('./out/admin.py','w',encoding='utf-8') as f1:
     f1.write('from django.contrib import admin\n')
     f1.write('from .models import *\n')
     f1.close()
 
-with open('./draw/drawModels.txt','r') as f:
+with open('./draw/drawModels.txt','r',encoding = 'utf-8') as f:
     
     lst = f.readlines()
 
@@ -42,6 +84,7 @@ with open('./draw/drawModels.txt','r') as f:
         body = parselst[1].replace('\n','')
         #print(body)#得到id auto,title string,year date之类的
         bodylst = body.split(',')
+        # print(bodylst)
        #print(bodylst)得到['id auto', 'title string', 'year date\n']
          #attribute type
         with open('./out/models.py','a') as f1:
@@ -49,15 +92,18 @@ with open('./draw/drawModels.txt','r') as f:
 class {}:
     '''.format(name+"(models.Model)").replace('/t','')
             f1.write(string)
-            # f1.close()
+            f1.close()
         for item in bodylst:
             itemlst = item.split()
             itemname = itemlst[0] #attribute name
             itemtype = itemlst[1]
+            itemElse = itemlst[2:]
             
-            writeAttribute(itemname,itemtype)
-        with open('./out/admin.py','a') as f2:
+            writeAttribute(name = itemname, type = itemtype, lst  = itemElse )
+        with open('./out/admin.py','a',encoding='utf-8') as f2:
+            
             f2.write('admin.site.register({})\n'.format(name))
+            f2.close()
 
         
 

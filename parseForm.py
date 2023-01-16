@@ -1,5 +1,5 @@
 def writeFormLoad():
-    with open('./out/forms.py','w') as f:
+    with open('./out/forms.py','w',encoding='utf-8') as f:
         f.write('from .models import *\n')
         f.write('from django import forms\n')
         f.close()
@@ -7,7 +7,7 @@ def writeFormLoad():
 def writeFormBody():
     modelnameLst = []
     bodypartLst = []
-    with open('./draw/drawModels.txt','r') as f:
+    with open('./draw/drawModels.txt','r',encoding='utf-8') as f:
     
         lst = f.readlines()
 
@@ -19,7 +19,7 @@ def writeFormBody():
             bodypartLst.append(body)
         f.close()
 
-    with open('./out/forms.py','a') as f:
+    with open('./out/forms.py','a',encoding='utf-8') as f:
         for i in modelnameLst:
             string = """
 class {}_Form(forms.ModelForm):

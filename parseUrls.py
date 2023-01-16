@@ -3,7 +3,7 @@
 还包含了urlpatterns = [
 '''
 def writeUrlLoad():
-    with open('./out/urls.py','w') as f:
+    with open('./out/urls.py','w',encoding='utf-8') as f:
         f.write('from django.urls import path ,include\n')
         f.write('from .views import *\n')
         f.write('urlpatterns = [\n')
@@ -16,7 +16,7 @@ def writeUrlLoad():
 '''
 def writeUrlBody():
     modelnameLst = []
-    with open('./draw/drawModels.txt','r') as f:
+    with open('./draw/drawModels.txt','r',encoding='utf-8') as f:
     
         lst = f.readlines()
 
@@ -28,7 +28,7 @@ def writeUrlBody():
 
         f.close()
     #print(modelnameLst)
-    with open('./out/urls.py','a') as f:
+    with open('./out/urls.py','a',encoding='utf-8') as f:
         for index in range(len(modelnameLst)):
             if index == 0:
                 i = modelnameLst[index]

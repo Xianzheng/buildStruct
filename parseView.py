@@ -1,7 +1,7 @@
 from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent
 def writeViewLoad():
-    with open('./out/views.py','w') as f:
+    with open('./out/views.py','w',encoding='utf-8') as f:
         delimiter = r"'\\'"
         string = """
 from django.shortcuts import render, redirect
@@ -25,7 +25,7 @@ def writeViewBody():
     bodypartLst = []
     nextmodelnameLst = []
     prevmodelnameLst = []
-    with open('./draw/drawModels.txt','r') as f:
+    with open('./draw/drawModels.txt','r',encoding='utf-8') as f:
     
         lst = f.readlines()
 
@@ -202,7 +202,7 @@ def writeAddSubTable():
     bodypartLst = []
     # nextmodelnameLst = []
     prevmodelnameLst = []
-    with open('./draw/drawModels.txt','r') as f:
+    with open('./draw/drawModels.txt','r',encoding='utf-8') as f:
     
         lst = f.readlines()
 
@@ -286,7 +286,7 @@ def writeUpdate():
     bodypartLst = []
     # nextmodelnameLst = []
     prevmodelnameLst = []
-    with open('./draw/drawModels.txt','r') as f:
+    with open('./draw/drawModels.txt','r',encoding='utf-8') as f:
     
         lst = f.readlines()
 
@@ -333,7 +333,7 @@ def writeDelete():
     bodypartLst = []
     # nextmodelnameLst = []
     prevmodelnameLst = []
-    with open('./draw/drawModels.txt','r') as f:
+    with open('./draw/drawModels.txt','r',encoding='utf-8') as f:
     
         lst = f.readlines()
 
