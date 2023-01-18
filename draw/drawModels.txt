@@ -1,0 +1,4 @@
+table1:id auto,title string vb-用水量 max-100 ,year date vb-更改日期
+table2:id auto,title string,table1 foreignKey
+table3:id auto,name string,age string,table2 foreignKey
+table4:id auto,name string,age string,table3 foreignKey

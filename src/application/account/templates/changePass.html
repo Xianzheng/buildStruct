@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="loginCSS" >
+  <form method="post" action="/changePass/">
+      {% csrf_token %}
+      {{ form }}
+      <button type="submit">修改</button>
+    </form>
+  </div>
+{% endblock%}

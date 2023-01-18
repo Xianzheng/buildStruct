@@ -1,0 +1,13 @@
+{% extends 'baseTemp.html' %}
+{% block content %}
+
+<div class = 'f1'>
+    <h4 style="margin-left: 100px;letter-spacing: 2px;">{{title}}</h4>
+    <form action="{{action}}" method="post">
+        {% csrf_token %}
+        {{ form }}   
+        <input type="submit" style ="margin-top: 25px;" value="确定">
+        <a style="margin-left: 130px" href = "{{goback}}">返回</a>
+    </form>
+</div>
+{% endblock %}
